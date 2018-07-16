@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+
+function loadDoc() {
+	var validate = validateForm();
+	if(validate){
+	
+	var url = "https://cloud-a4-shipra-2.azurewebsites.net/mbr/mortgage";
+
+	var data = {};
+	data.lifeinsurance = document.getElementById("lifeinsurance").value;
+	data.name  = document.getElementById("name").value;
+	data.address  = document.getElementById("address").value;
+	data.phone  = document.getElementById("phone").value;
+	data.employer  = document.getElementById("employer").value;
+	var json = JSON.stringify(data);
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+	xhr.onload = function () {
+		var mortgage = JSON.parse(xhr.responseText);
+		if (xhr.readyState == 4 && xhr.status == "200") {
+			document.getElementById('message').innerHTML = mortgage.msg;
+		} else {
+			console.error(mortgage);
+		}
+	}
+	xhr.send(json);
+	}
+	function validateForm(){
+		lifeinsurance = document.getElementById("lifeinsurance").value;
+		name  = document.getElementById("name").value;
+		address  = document.getElementById("address").value;
+		phone  = document.getElementById("phone").value;
+		employer  = document.getElementById("employer").value;
+		
+		if(lifeinsurance!="" && name!="" && address!="" && phone!="" && employer!=""){
+			return true;
+		}
+		else{
+			document.getElementById('message').innerHTML = "Please fill all the fields";
+			return false;
+		}
+	}
+}
+</script>
+
+<meta charset="ISO-8859-1">
+<title>MBR Portal</title>
+</head>
+<body>
+
+<h1>Welcome to MBR portal. Please fill the following details</h1>
+<p> <b id='message'></b> </p> 
+Name :
+<br>
+  <input type="text" name="name" id="name" value="" required><br><br>
+  Address:<br>
+  <input type="text"  name="address" id="address" value="" required><br><br>
+  Phone Number:<br>
+  <input type="text" name="phone" id="phone" value="" required><br><br>
+  Employer Name:<br>
+  <input type="text" name="employer" id="employer" value="" required><br><br>
+  Life Insurance Company<br>
+  <input type="text" name="lifeinsurance" id="lifeinsurance" value="" required><br><br>
+    <button onclick="loadDoc()">Submit</button>
+</body>
+
+</html>

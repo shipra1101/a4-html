@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+
+function doClick(objRad){
+	if (objRad.value=="0"){	
+	document.getElementById("employeelabel").style.display='none'; //hide textbox
+	document.getElementById("id").style.display='none'; //show other options
+	document.getElementById("authenticate").style.display='none'; //show other options
+	}
+	else{	
+	document.getElementById("employeelabel").style.display='block'; //hide other options
+	document.getElementById("id").style.display='block'; //show textbox
+	document.getElementById("authenticate").style.display='block'; //show other options
+	
+	}
+	}
+
+
+
+function agree() {
+	
+	var url = "https://cloud-a4-shipra-2.azurewebsites.net/employer/getemployee";
+
+	var data = {};
+	data.employeeid = document.getElementById("id").value;
+	data.brokerid = document.getElementById("brokerid").value;
+	var json = JSON.stringify(data);
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+	xhr.onload = function () {
+		var mortgage = JSON.parse(xhr.responseText);
+		if (xhr.readyState == 4 && xhr.status == "200") {
+			document.getElementById('message').innerHTML = mortgage.msg;
+			
+		} else {
+			console.error(mortgage);
+		}
+	}
+	xhr.send(json);
+}
+
+
+
+
+function loadDoc() {
+	
+	var url = "https://cloud-a4-shipra-2.azurewebsites.net/employer/authenticate";
+
+	var data = {};
+	data.employeeid = document.getElementById("id").value;
+	var json = JSON.stringify(data);
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+	xhr.onload = function () {
+		var mortgage = JSON.parse(xhr.responseText);
+		if (xhr.readyState == 4 && xhr.status == "200") {
+			document.getElementById('message').innerHTML = mortgage.msg;
+			if("Employee is authenticated" == mortgage.msg){
+				document.getElementById("employeelabel").style.display='none'; //hide textbox
+				document.getElementById("id").style.display='none'; //show other options
+				document.getElementById("authenticate").style.display='none'; //show other options
+				document.getElementById("selectbox").style.display='none';
+				document.getElementById("agree").style.display='block';
+				document.getElementById("agreebutton").style.display='block';
+				document.getElementById("checkvalue").style.display='block';
+				document.getElementById("brokerlabel").style.display='block';
+				document.getElementById("brokerid").style.display='block';
+			}
+			
+		} else {
+			console.error(mortgage);
+		}
+	}
+	xhr.send(json);
+}
+</script>
+
+<meta charset="ISO-8859-1">
+<title>MBR Portal</title>
+</head>
+<body>
+
+<h1>Welcome to Employer portal. Please select the action you want to do</h1>
+<p> <b id='message'></b> </p> 
+Select the action  :
+<br>
+ <select id="selectbox" onclick="doClick(this)">
+ <option value="0">Select Action</option>
+  <option value="1" selected>Mortgage Broker</option>
+</select>
+<br><br>
+  <label id="employeelabel">Enter Employee Id:</label><br>
+  <input type="text"  name="id" id="id" value="" required><br><br>
+  
+     <button id="authenticate" onclick="loadDoc()">Authenticate</button>
+   
+   
+   <label id="brokerlabel" style="display:none">Enter Broker Id:</label><br>
+  <input type="text" style="display:none" name="brokerid" id="brokerid"><br><br>
+    
+  <input id="agree" style="display:none" type="checkbox" name="agree" value="1">
+  <label style="display:none" id="checkvalue">I agree to share my employee information with the broker.</label>
+    <br><br>
+<br>  
+     <button  style="display:none" id="agreebutton" onclick="agree()">Agree</button>
+     
+     
+     
+</body>
+
+</html>

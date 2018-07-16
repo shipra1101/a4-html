@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+
+function loadDoc() {
+	
+	var url = "https://cloud-a4-shipra-2.azurewebsites.net/mbr/checkstatus";
+
+	var data = {};
+	data.brokerid = document.getElementById("id").value;
+	var json = JSON.stringify(data);
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+	xhr.onload = function () {
+		var mortgage = JSON.parse(xhr.responseText);
+		if (xhr.readyState == 4 && xhr.status == "200") {
+			document.getElementById('employermessage').innerHTML = mortgage.employerstatus;
+			document.getElementById('insurancemessage').innerHTML = mortgage.insurancestatus;
+		} else {
+			console.error(mortgage);
+		}
+	}
+	xhr.send(json);
+	}
+</script>
+
+<meta charset="ISO-8859-1">
+<title>MBR Portal</title>
+</head>
+<body>
+
+<h1>Welcome to MBR portal. Please enter the mortgage id to check the status.</h1>
+
+Enter Broker ID :
+<br>
+  <input type="text" name="id" id="id" value="" required><br><br>
+
+
+  <p> <b id='employermessage'></b> </p>  <br>
+    <p> <b id='insurancemessage'></b> </p> 
+    <button onclick="loadDoc()">Submit</button>
+</body>
+
+</html>
